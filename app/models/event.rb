@@ -1,4 +1,35 @@
 class Event
+  attr_accessor :name, :break_point, :venue
+
+  @@all = []
+  
+  def initialize(name, break_point, venue)
+    @name = name
+    @break_point = break_point
+    @venue = venue
+    @@all << self
+  end
+
+  def self.all
+    @@all
+  end
+
+  def tickets
+    Ticket.all.select {|ticket| ticket.event == self}
+  end
+
+  def sell_to_break_even
+    self.tickets.length > self.break_point ? 0 : self.break_point - self.tickets.length
+  end
+
+  def attendees #it is assumed that each attendee is unique, that an attendee does not buy multiple tickets for to use for his family
+    self.tickets.map {|ticket| ticket.attendee}
+  end
+
+  def average_age
+    self.attendees.reduce(0) {|sum, attendee| sum + attendee.age} / self.attendees.length
+  end
+
 end
 
 # Event.all
